@@ -1,0 +1,7 @@
+#ifndef QTXVERSION_MODULE_H
+#define QTXVERSION_MODULE_H
+
+#include "../src/version/version.h"
+#include "../src/version/versionrange.h"
+
+#endif

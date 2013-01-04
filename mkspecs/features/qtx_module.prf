@@ -2,5 +2,7 @@ isEmpty(MODULE):MODULE = $$section($$list($$basename(_PRO_FILE_)), ., 0, 0)
 isEmpty(VERSION):VERSION = $$eval(QTX.$${MODULE}.VERSION)
 
 TEMPLATE = lib
-DESTDIR  = $$eval(QTX.$${MODULE}.libs)
 TARGET   = $$eval(QTX.$${MODULE}.name)
+DESTDIR  = $$eval(QTX.$${MODULE}.libs)
+
+TARGET   = $$qtxLibraryTarget($$TARGET)

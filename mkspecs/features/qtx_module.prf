@@ -4,6 +4,7 @@ isEmpty(VERSION):VERSION = $$eval(QTX.$${MODULE}.VERSION)
 TEMPLATE = lib
 TARGET   = $$eval(QTX.$${MODULE}.name)
 DESTDIR  = $$eval(QTX.$${MODULE}.libs)
+TARGET   = $$qtxLibraryTarget($$TARGET)
 
 # Build Configurations
 #
@@ -20,7 +21,7 @@ DESTDIR  = $$eval(QTX.$${MODULE}.libs)
 # On Mac OS X, a framework will be created by default.  To build a dynamic
 # library:
 #
-#     $ qmake [options] "CONFIG+=no_framework"
+#     $ qmake [options] "CONFIG+=dylib"
 
 debug_and_release {
     CONFIG += build_all
@@ -28,10 +29,7 @@ debug_and_release {
 
 mac:!static {
     CONFIG += lib_bundle
-    
-    no_framework {
+    dylib {
         CONFIG -= lib_bundle
     }
 }
-
-TARGET   = $$qtxLibraryTarget($$TARGET)

@@ -1,0 +1,5 @@
+INCLUDEPATH += ../../../src/version
+
+LIBS += -L../../../lib
+
+LIBS += -lQtxVersion

@@ -1,3 +1,5 @@
+include(../../../mkspecs/features/tests/qtx_test.prf)
+
 TEMPLATE = app
 TARGET = tst_version
 
@@ -11,11 +13,11 @@ SOURCES += tst_version.cpp
 # ------------
 # Dependencies
 # ------------
-INCLUDEPATH += \
-    ../../../src/version
+#INCLUDEPATH += \
+#    ../../../src/version
 
-HEADERS += \
-    ../../../src/version/version.h
+#HEADERS += \
+#    ../../../src/version/version.h
 
-SOURCES += \
-    ../../../src/version/version.cpp
+#SOURCES += \
+#    ../../../src/version/version.cpp

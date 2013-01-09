@@ -1,9 +1,11 @@
 #ifndef TST_VERSION_H
 #define TST_VERSION_H
 
+#include "version.h"
 #include <QtTest/QtTest>
 
-class Version;
+QTX_USE_NAMESPACE
+
 
 class tst_Version : public QObject
 {

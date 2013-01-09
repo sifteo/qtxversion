@@ -1,8 +1,11 @@
 #ifndef QTXVERSION_VERSIONRANGE_H
 #define QTXVERSION_VERSIONRANGE_H
 
-#include <QtCore>
+#include "versionglobal.h"
 #include "version.h"
+#include <QtCore>
+
+QTX_BEGIN_NAMESPACE
 
 
 // https://github.com/rubygems/rubygems/blob/master/lib/rubygems/requirement.rb
@@ -36,5 +39,8 @@ private:
     
     QList< VersionRange::RequirementPair > mRequirements;
 };
+
+
+QTX_END_NAMESPACE
 
 #endif // QTXVERSION_VERSIONRANGE_H

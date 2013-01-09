@@ -1,5 +1,8 @@
 #include "version.h"
 
+QTX_BEGIN_NAMESPACE
+
+
 const char Version::kNormalSeparator[] = ".";
 const char Version::kPrereleaseSeparator[] = "-";
 const char Version::kBuildSeparator[] = "+";
@@ -205,3 +208,6 @@ void Version::parse(const QString & string)
         pos += rx.matchedLength();
     }
 }
+
+
+QTX_END_NAMESPACE

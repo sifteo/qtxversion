@@ -1,5 +1,7 @@
 #include "versionrange.h"
 
+QTX_BEGIN_NAMESPACE
+
 
 VersionRange::VersionRange()
 {
@@ -100,3 +102,6 @@ VersionRange::RequirementPair VersionRange::parse(const QString & string)
     
     return qMakePair(op, Version(version));
 }
+
+
+QTX_END_NAMESPACE

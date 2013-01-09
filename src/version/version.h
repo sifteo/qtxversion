@@ -1,8 +1,10 @@
 #ifndef QTXVERSION_VERSION_H
 #define QTXVERSION_VERSION_H
 
+#include "versionglobal.h"
 #include <QtCore>
 
+QTX_BEGIN_NAMESPACE
 
 
 // http://semver.org/
@@ -48,5 +50,8 @@ private:
     
     QList<Segment> mSegments;
 };
+
+
+QTX_END_NAMESPACE
 
 #endif // QTXVERSION_VERSION_H

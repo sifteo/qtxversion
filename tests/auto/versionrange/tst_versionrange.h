@@ -1,9 +1,11 @@
 #ifndef TST_VERSIONRANGE_H
 #define TST_VERSIONRANGE_H
 
+#include "versionrange.h"
 #include <QtTest/QtTest>
 
-class VersionRange;
+QTX_USE_NAMESPACE
+
 
 class tst_VersionRange : public QObject
 {

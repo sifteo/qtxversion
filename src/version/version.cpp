@@ -3,55 +3,58 @@
 QTX_BEGIN_NAMESPACE
 
 
-const char Version::kNormalSeparator[] = ".";
-const char Version::kPrereleaseSeparator[] = "-";
-const char Version::kBuildSeparator[] = "+";
+class VersionPrivate
+{
+public:
+    static const char kNormalSeparator[];
+    static const char kPrereleaseSeparator[];
+    static const char kBuildSeparator[];
+
+public:
+    void parse(const QString & string);
+    
+    struct Segment {
+        QString value;
+        QString separator;
+    };
+    
+    QList<Segment> segments;
+};
+
+const char VersionPrivate::kNormalSeparator[] = ".";
+const char VersionPrivate::kPrereleaseSeparator[] = "-";
+const char VersionPrivate::kBuildSeparator[] = "+";
 
 
 Version::Version()
+    : d_ptr(new VersionPrivate())
 {
 }
 
 Version::Version(const QString & string)
+    : d_ptr(new VersionPrivate())
 {
-    parse(string);
+    d_ptr->parse(string);
 }
 
 Version::Version(const Version & other)
+    : d_ptr(new VersionPrivate())
 {
-    mSegments = other.mSegments;
+    d_ptr->segments = other.d_ptr->segments;
 }
 
 Version::~Version()
 {
-}
-
-QString Version::formattedString() const
-{
-    if (!isValid()) {
-        return "";
+    if (d_ptr) {
+        delete d_ptr;
+        d_ptr = 0;
     }
-    
-    QList<Segment> segments = mSegments;
-    while (segments.size() < 2) {
-        Segment segment;
-        segment.value = "0";
-        segment.separator = ".";
-        segments.append(segment);
-    }
-    
-    QString s;
-    foreach (Segment segment, segments) {
-        s.append(segment.separator);
-        s.append(segment.value);
-    }
-    return s;
 }
 
 QString Version::toString() const
 {
     QString s;
-    foreach (Segment segment, mSegments) {
+    foreach (VersionPrivate::Segment segment, d_ptr->segments) {
         s.append(segment.separator);
         s.append(segment.value);
     }
@@ -60,8 +63,8 @@ QString Version::toString() const
 
 bool Version::isNormal() const
 {
-    foreach (Segment segment, mSegments) {
-        if (segment.separator == kPrereleaseSeparator) {
+    foreach (VersionPrivate::Segment segment, d_ptr->segments) {
+        if (segment.separator == VersionPrivate::kPrereleaseSeparator) {
             return false;
         }
     }
@@ -70,8 +73,8 @@ bool Version::isNormal() const
 
 bool Version::isPrerelease() const
 {
-    foreach (Segment segment, mSegments) {
-        if (segment.separator == kPrereleaseSeparator) {
+    foreach (VersionPrivate::Segment segment, d_ptr->segments) {
+        if (segment.separator == VersionPrivate::kPrereleaseSeparator) {
             return true;
         }
     }
@@ -80,8 +83,8 @@ bool Version::isPrerelease() const
 
 bool Version::hasBuild() const
 {
-    foreach (Segment segment, mSegments) {
-        if (segment.separator == kBuildSeparator) {
+    foreach (VersionPrivate::Segment segment, d_ptr->segments) {
+        if (segment.separator == VersionPrivate::kBuildSeparator) {
             return true;
         }
     }
@@ -90,42 +93,42 @@ bool Version::hasBuild() const
 
 bool Version::isValid() const
 {
-    return mSegments.size() > 0;
+    return d_ptr->segments.size() > 0;
 }
 
 int Version::compare(const Version & other) const
 {
     if (this == &other) { return 0; }
     
-    int limit = (mSegments.size() > other.mSegments.size()) ? mSegments.size() : other.mSegments.size();
+    int limit = (d_ptr->segments.size() > other.d_ptr->segments.size()) ? d_ptr->segments.size() : other.d_ptr->segments.size();
     
     for (int i = 0; i < limit; i++) {
-        Segment lhsSegment;
-        Segment rhsSegment;
+        VersionPrivate::Segment lhsSegment;
+        VersionPrivate::Segment rhsSegment;
         int lhs = 0;
         int rhs = 0;
         bool lhsIsNumber = true;
         bool rhsIsNumber = true;
         
-        if (i < mSegments.size()) {
-            lhsSegment = mSegments.at(i);
+        if (i < d_ptr->segments.size()) {
+            lhsSegment = d_ptr->segments.at(i);
         } else {
             lhsSegment.value = "0";
-            lhsSegment.separator = kNormalSeparator;
+            lhsSegment.separator = VersionPrivate::kNormalSeparator;
         }
-        if (i < other.mSegments.size()) {
-            rhsSegment = other.mSegments.at(i);
+        if (i < other.d_ptr->segments.size()) {
+            rhsSegment = other.d_ptr->segments.at(i);
         } else {
             rhsSegment.value = "0";
-            rhsSegment.separator = kNormalSeparator;
+            rhsSegment.separator = VersionPrivate::kNormalSeparator;
         }
         
         
         if (lhsSegment.separator != rhsSegment.separator) {
-            if (lhsSegment.separator == kPrereleaseSeparator) { return -1; }
-            if (lhsSegment.separator == kBuildSeparator) { return 1; }
-            if (rhsSegment.separator == kPrereleaseSeparator) { return 1; }
-            if (rhsSegment.separator == kBuildSeparator) { return -1; }
+            if (lhsSegment.separator == VersionPrivate::kPrereleaseSeparator) { return -1; }
+            if (lhsSegment.separator == VersionPrivate::kBuildSeparator) { return 1; }
+            if (rhsSegment.separator == VersionPrivate::kPrereleaseSeparator) { return 1; }
+            if (rhsSegment.separator == VersionPrivate::kBuildSeparator) { return -1; }
         }
         
         lhs = lhsSegment.value.toInt(&lhsIsNumber);
@@ -159,7 +162,7 @@ Version & Version::operator= (const Version & rhs)
 {
     if (this == &rhs) { return *this; }
 
-    mSegments = rhs.mSegments;
+    d_ptr->segments = rhs.d_ptr->segments;
     return *this;
 }
 
@@ -193,17 +196,18 @@ bool Version::operator>= (const Version & rhs) const
     return (this->compare(rhs) >= 0);
 }
 
-void Version::parse(const QString & string)
+
+void VersionPrivate::parse(const QString & string)
 {
     QRegExp rx("([0-9A-Za-z]+)");
     int pos = 0;
     while ((pos = rx.indexIn(string, pos)) != -1) {
         Segment segment;
         segment.value = rx.cap(1);
-        if (mSegments.size() > 0) {
+        if (segments.size() > 0) {
             segment.separator = string.at(pos - 1).toAscii();
         }
-        mSegments.append(segment);
+        segments.append(segment);
         
         pos += rx.matchedLength();
     }

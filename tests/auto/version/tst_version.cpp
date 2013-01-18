@@ -48,6 +48,8 @@ void tst_Version::parseNormalVersionTest()
     QCOMPARE(v1_0_b1.toString(), QString("1.0.b1"));
     QVERIFY(v1_0_b1.isNormal());
     QVERIFY(!v1_0_b1.isPrerelease());
+    QVERIFY(!v1_0_b1.hasBuild());
+    QVERIFY(v1_0_b1.isValid());
     
     // normal version segments are separated by any non-alphanumeric character,
     // which is a looser interpretation of the Semantic Versioning specification
@@ -55,6 +57,8 @@ void tst_Version::parseNormalVersionTest()
     QCOMPARE(v9_0_21022_8.toString(), QString("9_0_21022_8"));
     QVERIFY(v9_0_21022_8.isNormal());
     QVERIFY(!v9_0_21022_8.isPrerelease());
+    QVERIFY(!v9_0_21022_8.hasBuild());
+    QVERIFY(v9_0_21022_8.isValid());
 }
 
 void tst_Version::parsePrereleaseVersionTest()
@@ -63,21 +67,29 @@ void tst_Version::parsePrereleaseVersionTest()
     QCOMPARE(v1_0_0_alpha.toString(), QString("1.0.0-alpha"));
     QVERIFY(!v1_0_0_alpha.isNormal());
     QVERIFY(v1_0_0_alpha.isPrerelease());
+    QVERIFY(!v1_0_0_alpha.hasBuild());
+    QVERIFY(v1_0_0_alpha.isValid());
 
     Version v1_0_0_alpha_1("1.0.0-alpha.1");
     QCOMPARE(v1_0_0_alpha_1.toString(), QString("1.0.0-alpha.1"));
     QVERIFY(!v1_0_0_alpha_1.isNormal());
     QVERIFY(v1_0_0_alpha_1.isPrerelease());
+    QVERIFY(!v1_0_0_alpha_1.hasBuild());
+    QVERIFY(v1_0_0_alpha_1.isValid());
 
     Version v1_0_0_0_3_7("1.0.0-0.3.7");
     QCOMPARE(v1_0_0_0_3_7.toString(), QString("1.0.0-0.3.7"));
     QVERIFY(!v1_0_0_0_3_7.isNormal());
     QVERIFY(v1_0_0_0_3_7.isPrerelease());
+    QVERIFY(!v1_0_0_0_3_7.hasBuild());
+    QVERIFY(v1_0_0_0_3_7.isValid());
 
     Version v1_0_0_x_7_z_92("1.0.0-x.7.z.92");
     QCOMPARE(v1_0_0_x_7_z_92.toString(), QString("1.0.0-x.7.z.92"));
     QVERIFY(!v1_0_0_x_7_z_92.isNormal());
     QVERIFY(v1_0_0_x_7_z_92.isPrerelease());
+    QVERIFY(!v1_0_0_x_7_z_92.hasBuild());
+    QVERIFY(v1_0_0_x_7_z_92.isValid());
 }
 
 void tst_Version::parseBuildVersionTest()
@@ -87,15 +99,26 @@ void tst_Version::parseBuildVersionTest()
     QVERIFY(v1_0_0_build_1.isNormal());
     QVERIFY(!v1_0_0_build_1.isPrerelease());
     QVERIFY(v1_0_0_build_1.hasBuild());
+    QVERIFY(v1_0_0_build_1.isValid());
 
     Version v1_3_7_build_11("1.3.7+build.11.e0f985a");
     QCOMPARE(v1_3_7_build_11.toString(), QString("1.3.7+build.11.e0f985a"));
     QVERIFY(v1_3_7_build_11.isNormal());
     QVERIFY(!v1_3_7_build_11.isPrerelease());
     QVERIFY(v1_3_7_build_11.hasBuild());
+    QVERIFY(v1_3_7_build_11.isValid());
 }
 
-void tst_Version::compareVersionsTest()
+void tst_Version::compareEqualVersionTest()
+{
+    Version a("1.2.3");
+    Version b("1.2.3");
+    
+    QVERIFY(a.compare(a) == 0);
+    QVERIFY(a.compare(b) == 0);
+}
+
+void tst_Version::compareDifferentVersionTest()
 {
     Version v1_2_3("1.2.3");
     Version v1_2_4("1.2.4");
@@ -106,15 +129,6 @@ void tst_Version::compareVersionsTest()
     
     QVERIFY(v1_2_30.compare(v1_2_4) == 1);
     QVERIFY(v1_2_4.compare(v1_2_3) == 1);
-}
-
-void tst_Version::compareEqualVersionTest()
-{
-    Version a("1.2.3");
-    Version b("1.2.3");
-    
-    QVERIFY(a.compare(a) == 0);
-    QVERIFY(a.compare(b) == 0);
 }
 
 void tst_Version::compareDifferentSegmentCountTest()
@@ -176,7 +190,7 @@ void tst_Version::compareNumericVsAlphanumericTest()
     QVERIFY(v1_0_0_8a.compare(v1_0_0_80) == 1);
 }
 
-void tst_Version::comparePrerelaseVsBuildTest()
+void tst_Version::comparePrereleaseVsBuildTest()
 {
     Version v1_0_0_pre("1.0.0-foo");
     Version v1_0_0("1.0.0");
@@ -189,6 +203,17 @@ void tst_Version::comparePrerelaseVsBuildTest()
     QVERIFY(v1_0_0_build.compare(v1_0_0_pre) == 1);
     QVERIFY(v1_0_0_build.compare(v1_0_0) == 1);
     QVERIFY(v1_0_0.compare(v1_0_0_pre) == 1);
+}
+
+void tst_Version::compareInvalidTest()
+{
+    Version vInvalid("");
+    Version vOtherInvalid("");
+    Version v1_2("1.2");
+    
+    QVERIFY(vInvalid.compare(vOtherInvalid) == 0);
+    QVERIFY(vInvalid.compare(v1_2) == -1);
+    QVERIFY(v1_2.compare(vInvalid) == 1);
 }
 
 void tst_Version::semverExampleTest()
@@ -228,21 +253,6 @@ void tst_Version::semverExampleTest()
     QVERIFY(v1_0_0_alpha_1.compare(v1_0_0_alpha) == 1);
 }
 
-void tst_Version::formattedStringTest()
-{
-    Version vEmpty("");
-    QCOMPARE(vEmpty.formattedString(), QString(""));
-    
-    Version v1("1");
-    QCOMPARE(v1.formattedString(), QString("1.0"));
-    
-    Version v1_2("1.2");
-    QCOMPARE(v1_2.formattedString(), QString("1.2"));
-    
-    Version v1_2_3("1.2.3");
-    QCOMPARE(v1_2_3.formattedString(), QString("1.2.3"));
-}
-
 void tst_Version::operatorEqualTest()
 {
     Version a("1.2.3");
@@ -266,7 +276,7 @@ void tst_Version::operatorNotEqualsTest()
     Version v1_3("1.3");
     
     QVERIFY(v1_2 != v1_3);
-    QVERIFY(!(v1_2 != same));
+    QVERIFY(v1_2 == same);
 }
 
 void tst_Version::operatorLessThanTest()

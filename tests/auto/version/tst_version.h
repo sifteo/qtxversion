@@ -23,17 +23,16 @@ private slots:
     void parsePrereleaseVersionTest();
     void parseBuildVersionTest();
     
-    void compareVersionsTest();
     void compareEqualVersionTest();
+    void compareDifferentVersionTest();
     void compareDifferentSegmentCountTest();
     void comparePrereleaseSegmentsTest();
     void compareBuildSegmentsTest();
     void compareNumericVsAlphanumericTest();
-    void comparePrerelaseVsBuildTest();
+    void comparePrereleaseVsBuildTest();
+    void compareInvalidTest();
     
     void semverExampleTest();
-    
-    void formattedStringTest();
     
     void operatorEqualTest();
     void operatorEqualsTest();

@@ -52,6 +52,10 @@ VersionRange::VersionRange(const VersionRange & other)
 
 bool VersionRange::isSatisfiedBy(const Version & version) const
 {
+    if (!version.isValid()) {
+        return false;
+    }
+
     foreach (VersionRangePrivate::RequirementPair requirement, d_ptr->requirements) {
         bool satisfied = false;
         

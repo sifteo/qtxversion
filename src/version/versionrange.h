@@ -11,6 +11,9 @@ QTX_BEGIN_NAMESPACE
 // https://github.com/rubygems/rubygems/blob/master/lib/rubygems/requirement.rb
 // https://github.com/isaacs/node-semver
 // http://npmjs.org/doc/json.html
+
+class VersionRangePrivate;
+
 class VersionRange
 {
 public:
@@ -23,21 +26,10 @@ public:
     
     VersionRange & operator= (const VersionRange & rhs);
     
+protected:
+    VersionRangePrivate *d_ptr;
 private:
-    typedef enum {
-        UnknownOperator,
-        EqualToOperator,
-        GreaterThanOperator,
-        GreaterThanOrEqualToOperator,
-        LessThanOperator,
-        LessThanOrEqualToOperator,
-        NotEqualToOperator
-    } Operator;
-    
-    typedef QPair<VersionRange::Operator, Version> RequirementPair;
-    VersionRange::RequirementPair parse(const QString & string);
-    
-    QList< VersionRange::RequirementPair > mRequirements;
+    Q_DECLARE_PRIVATE(VersionRange);
 };
 
 

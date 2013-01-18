@@ -8,6 +8,8 @@ QTX_BEGIN_NAMESPACE
 
 
 // http://semver.org/
+// Based on RubyGems versioning scheme.
+// See https://github.com/rubygems/rubygems/blob/master/lib/rubygems/version.rb
 
 class VersionPrivate;
 

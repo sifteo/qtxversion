@@ -109,6 +109,11 @@ void VersionRangePrivate::parse(const QString & string)
         //qDebug() << "CAP 1: " << rx.cap(1);
         //qDebug() << "CAP 2: " << rx.cap(2);
         
+        // TODO: Implement "*" version range
+        // TODO: Implement "X" version ranges
+        // TODO: Implement tilde (aka approximate) version ranges
+        // TODO: Implement "v1 - v2" version ranges
+        
         Operator op = UnknownOperator;
         QString o = rx.cap(1).simplified();
         QString version = rx.cap(2).simplified();

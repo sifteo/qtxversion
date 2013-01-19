@@ -142,6 +142,19 @@ void tst_VersionRange::notEqualToOperatorWithoutSpaceTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
+void tst_VersionRange::exclusiveRangeAsStringTest()
+{
+    VersionRange range("> 1.2 < 1.4");
+    QVERIFY(!range.isSatisfiedBy(QString("1.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.2")));
+    QVERIFY(range.isSatisfiedBy(QString("1.2.1")));
+    QVERIFY(range.isSatisfiedBy(QString("1.3")));
+    QVERIFY(range.isSatisfiedBy(QString("1.3.9")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.4")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.5")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
 void tst_VersionRange::exclusiveRangeAsArrayTest()
 {
     QStringList list = (QStringList() << "> 1.2" << "< 1.4");
@@ -153,6 +166,20 @@ void tst_VersionRange::exclusiveRangeAsArrayTest()
     QVERIFY(range.isSatisfiedBy(QString("1.3")));
     QVERIFY(range.isSatisfiedBy(QString("1.3.9")));
     QVERIFY(!range.isSatisfiedBy(QString("1.4")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.5")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
+void tst_VersionRange::inclusiveRangeAsStringTest()
+{
+    VersionRange range(">= 1.2 <= 1.4");
+    QVERIFY(!range.isSatisfiedBy(QString("1.1")));
+    QVERIFY(range.isSatisfiedBy(QString("1.2")));
+    QVERIFY(range.isSatisfiedBy(QString("1.2.1")));
+    QVERIFY(range.isSatisfiedBy(QString("1.3")));
+    QVERIFY(range.isSatisfiedBy(QString("1.3.9")));
+    QVERIFY(range.isSatisfiedBy(QString("1.4")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.4.1")));
     QVERIFY(!range.isSatisfiedBy(QString("1.5")));
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }

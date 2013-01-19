@@ -30,7 +30,9 @@ private slots:
     void notEqualToOperatorTest();
     void notEqualToOperatorWithoutSpaceTest();
     
+    void exclusiveRangeAsStringTest();
     void exclusiveRangeAsArrayTest();
+    void inclusiveRangeAsStringTest();
     void inclusiveRangeAsArrayTest();
     
     void invalidEqualToThanRequirement();

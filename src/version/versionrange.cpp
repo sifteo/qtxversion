@@ -17,7 +17,8 @@ public:
     } Operator;
 
     typedef QPair<Operator, Version> RequirementPair;
-    static RequirementPair parse(const QString & string);
+    
+    void parse(const QString & string);
     
     QList<RequirementPair> requirements;
 };
@@ -31,16 +32,14 @@ VersionRange::VersionRange()
 VersionRange::VersionRange(const QString & string)
     : d_ptr(new VersionRangePrivate())
 {
-    VersionRangePrivate::RequirementPair requirement = VersionRangePrivate::parse(string);
-    d_ptr->requirements.append(requirement);
+    d_ptr->parse(string);
 }
 
 VersionRange::VersionRange(const QStringList & strings)
     : d_ptr(new VersionRangePrivate())
 {
     foreach (QString string, strings) {
-        VersionRangePrivate::RequirementPair requirement = VersionRangePrivate::parse(string);
-        d_ptr->requirements.append(requirement);
+        d_ptr->parse(string);
     }
 }
 
@@ -59,30 +58,32 @@ bool VersionRange::isSatisfiedBy(const Version & version) const
     foreach (VersionRangePrivate::RequirementPair requirement, d_ptr->requirements) {
         bool satisfied = false;
         
-        // switch on the operation
-        switch (requirement.first)
-        {
-        case VersionRangePrivate::EqualToOperator:
-            satisfied = (version == requirement.second);
-            break;
-        case VersionRangePrivate::GreaterThanOperator:
-            satisfied = (version > requirement.second);
-            break;
-        case VersionRangePrivate::GreaterThanOrEqualToOperator:
-            satisfied = (version >= requirement.second);
-            break;
-        case VersionRangePrivate::LessThanOperator:
-            satisfied = (version < requirement.second);
-            break;
-        case VersionRangePrivate::LessThanOrEqualToOperator:
-            satisfied = (version <= requirement.second);
-            break;
-        case VersionRangePrivate::NotEqualToOperator:
-            satisfied = (version != requirement.second);
-            break;
-        default:
-            satisfied = false;
-            break;
+        if (requirement.second.isValid()) {
+          // switch on the operation
+          switch (requirement.first)
+          {
+          case VersionRangePrivate::EqualToOperator:
+              satisfied = (version == requirement.second);
+              break;
+          case VersionRangePrivate::GreaterThanOperator:
+              satisfied = (version > requirement.second);
+              break;
+          case VersionRangePrivate::GreaterThanOrEqualToOperator:
+              satisfied = (version >= requirement.second);
+              break;
+          case VersionRangePrivate::LessThanOperator:
+              satisfied = (version < requirement.second);
+              break;
+          case VersionRangePrivate::LessThanOrEqualToOperator:
+              satisfied = (version <= requirement.second);
+              break;
+          case VersionRangePrivate::NotEqualToOperator:
+              satisfied = (version != requirement.second);
+              break;
+          default:
+              satisfied = false;
+              break;
+          }
         }
         
         if (!satisfied) { return false; }
@@ -100,21 +101,21 @@ VersionRange & VersionRange::operator= (const VersionRange & rhs)
 }
 
 
-VersionRangePrivate::RequirementPair VersionRangePrivate::parse(const QString & string)
+void VersionRangePrivate::parse(const QString & string)
 {
-    QStringList components = string.simplified().split(" ");
-    
-    Operator op = UnknownOperator;
-    QString version = "";
-    
-    if (components.size() == 1) {
-        op = EqualToOperator;
-        version = components.at(0);
-    } else {
-        QString o = components.at(0);
-        version = components.at(1);
+    QRegExp rx("([\\W ]*)([\\S]+)");
+    int pos = 0;
+    while ((pos = rx.indexIn(string, pos)) != -1) {
+        //qDebug() << "CAP 1: " << rx.cap(1);
+        //qDebug() << "CAP 2: " << rx.cap(2);
         
-        if (o == "=") {
+        Operator op = UnknownOperator;
+        QString o = rx.cap(1).simplified();
+        QString version = rx.cap(2).simplified();
+        
+        if (o == "") {
+            op = EqualToOperator;
+        } else if (o == "=") {
             op = EqualToOperator;
         } else if (o == ">") {
             op = GreaterThanOperator;
@@ -127,10 +128,13 @@ VersionRangePrivate::RequirementPair VersionRangePrivate::parse(const QString & 
         } else if (o == "!=") {
             op = NotEqualToOperator;
         }
+        
+        RequirementPair requirement = qMakePair(op, Version(version)); 
+        requirements.append(requirement);
+        
+        pos += rx.matchedLength();
     }
-    
-    return qMakePair(op, Version(version));
-}
+  }
 
 
 QTX_END_NAMESPACE

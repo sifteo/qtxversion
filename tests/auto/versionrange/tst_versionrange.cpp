@@ -43,9 +43,27 @@ void tst_VersionRange::equalToOperatorTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
+void tst_VersionRange::equalToOperatorWithoutSpaceTest()
+{
+    VersionRange range("=1.0.1");
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
 void tst_VersionRange::greaterThanOperatorTest()
 {
     VersionRange range("> 1.0.1");
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
+void tst_VersionRange::greaterThanOperatorWithoutSpaceTest()
+{
+    VersionRange range(">1.0.1");
     QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
     QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
     QVERIFY(range.isSatisfiedBy(QString("1.0.2")));
@@ -61,9 +79,27 @@ void tst_VersionRange::greaterThanOrEqualToOperatorTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
+void tst_VersionRange::greaterThanOrEqualToOperatorWithoutSpaceTest()
+{
+    VersionRange range(">=1.0.1");
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
 void tst_VersionRange::lessThanOperatorTest()
 {
     VersionRange range("< 1.0.1");
+    QVERIFY(range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
+void tst_VersionRange::lessThanOperatorWithoutSpaceTest()
+{
+    VersionRange range("<1.0.1");
     QVERIFY(range.isSatisfiedBy(QString("1.0.0")));
     QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
     QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
@@ -79,6 +115,15 @@ void tst_VersionRange::lessThanOrEqualToOpeatorTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
+void tst_VersionRange::lessThanOrEqualToOpeatorWithoutSpaceTest()
+{
+    VersionRange range("<=1.0.1");
+    QVERIFY(range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
 void tst_VersionRange::notEqualToOperatorTest()
 {
     VersionRange range("!= 1.0.1");
@@ -88,7 +133,16 @@ void tst_VersionRange::notEqualToOperatorTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
-void tst_VersionRange::exclusiveRangeTest()
+void tst_VersionRange::notEqualToOperatorWithoutSpaceTest()
+{
+    VersionRange range("!=1.0.1");
+    QVERIFY(range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
+void tst_VersionRange::exclusiveRangeAsArrayTest()
 {
     QStringList list = (QStringList() << "> 1.2" << "< 1.4");
     
@@ -103,7 +157,7 @@ void tst_VersionRange::exclusiveRangeTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
-void tst_VersionRange::inclusiveRangeTest()
+void tst_VersionRange::inclusiveRangeAsArrayTest()
 {
     QStringList list = (QStringList() << ">= 1.2" << "<= 1.4");
     
@@ -119,5 +173,31 @@ void tst_VersionRange::inclusiveRangeTest()
     QVERIFY(!range.isSatisfiedBy(QString("")));
 }
 
+void tst_VersionRange::invalidEqualToThanRequirement()
+{
+    VersionRange range("= ");
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
+void tst_VersionRange::invalidGreaterThanRequirement()
+{
+    VersionRange range("> ");
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
+
+void tst_VersionRange::invalidLessThanRequirement()
+{
+    VersionRange range("< ");
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.0")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.1")));
+    QVERIFY(!range.isSatisfiedBy(QString("1.0.2")));
+    QVERIFY(!range.isSatisfiedBy(QString("")));
+}
 
 QTEST_APPLESS_MAIN(tst_VersionRange)

@@ -18,14 +18,24 @@ private slots:
     void unspecifiedRequirementTest();
     void noOperatorTest();
     void equalToOperatorTest();
+    void equalToOperatorWithoutSpaceTest();
     void greaterThanOperatorTest();
+    void greaterThanOperatorWithoutSpaceTest();
     void greaterThanOrEqualToOperatorTest();
+    void greaterThanOrEqualToOperatorWithoutSpaceTest();
     void lessThanOperatorTest();
+    void lessThanOperatorWithoutSpaceTest();
     void lessThanOrEqualToOpeatorTest();
+    void lessThanOrEqualToOpeatorWithoutSpaceTest();
     void notEqualToOperatorTest();
+    void notEqualToOperatorWithoutSpaceTest();
     
-    void exclusiveRangeTest();
-    void inclusiveRangeTest();
+    void exclusiveRangeAsArrayTest();
+    void inclusiveRangeAsArrayTest();
+    
+    void invalidEqualToThanRequirement();
+    void invalidGreaterThanRequirement();
+    void invalidLessThanRequirement();
     
 public:
     VersionRange *mVersionRange;

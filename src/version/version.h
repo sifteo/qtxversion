@@ -21,6 +21,7 @@ public:
     Version(const Version & other);
     ~Version();
     
+    QString segment(int i) const;
     QString toString() const;
     
     bool isNormal() const;

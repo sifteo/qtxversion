@@ -27,6 +27,11 @@ void tst_Version::stringConstructorTest()
     Version v1_2_3("1.2.3");
     QCOMPARE(v1_2_3.toString(), QString("1.2.3"));
     QVERIFY(v1_2_3.isValid());
+    
+    QCOMPARE(v1_2_3.segment(0), QString("1"));
+    QCOMPARE(v1_2_3.segment(1), QString("2"));
+    QCOMPARE(v1_2_3.segment(2), QString("3"));
+    QCOMPARE(v1_2_3.segment(9), QString(""));
 }
 
 void tst_Version::copyConstructorTest()

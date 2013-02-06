@@ -51,6 +51,14 @@ Version::~Version()
     }
 }
 
+QString Version::segment(int i) const
+{
+    if (i < d_ptr->segments.size()) {
+        return d_ptr->segments.at(i).value;
+    }
+    return "";
+}
+
 QString Version::toString() const
 {
     QString s;

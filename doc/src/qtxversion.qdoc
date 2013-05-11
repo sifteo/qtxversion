@@ -1,0 +1,11 @@
+/*!
+    \module QtxVersion
+    \title QtxVersion
+    \brief The QtxVersion module contains classes for versioning in accordance with the SemVer specification.
+    
+    To include the definitions of this module's classes, use the following directive:
+    
+    \code
+        #include <QtxVersion>
+    \endcode
+*/
